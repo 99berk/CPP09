@@ -4,7 +4,8 @@
 #include <string>
 #include <map>
 
-class BitcoinExchange {
+class BitcoinExchange
+{
 	private:
 		std::map<std::string, float> exchangeRates;
 		void loadDatabase(const std::string& filename);

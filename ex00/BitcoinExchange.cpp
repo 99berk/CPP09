@@ -46,7 +46,6 @@ void BitcoinExchange::loadDatabase(const std::string& filename)
 		
 		if (firstLine)
 		{
-			// Validate header format
 			if (line != "date,exchange_rate")
 				throw std::runtime_error("Error: invalid database header format.");
 			firstLine = false;
@@ -55,8 +54,9 @@ void BitcoinExchange::loadDatabase(const std::string& filename)
 		
 		if (!isValidDatabaseFormat(line))
 		{
-			std::cerr << "Warning: invalid format at line " << lineNumber << ": " << line << std::endl;
-			continue;
+			std::ostringstream oss;
+			oss << "Error: invalid format at line " << lineNumber << ": " << line;
+			throw std::runtime_error(oss.str());
 		}
 		
 		size_t commaPos = line.find(',');
@@ -65,21 +65,27 @@ void BitcoinExchange::loadDatabase(const std::string& filename)
 		
 		std::string date = trim(line.substr(0, commaPos));
 		std::string rateStr = trim(line.substr(commaPos + 1));
-		
-		// Validate date format
+
 		if (!isValidDate(date))
 		{
-			std::cerr << "Warning: invalid date format at line " << lineNumber << ": " << date << std::endl;
-			continue;
+			std::ostringstream oss;
+			oss << "Error: invalid date format at line " << lineNumber << ": " << date;
+			throw std::runtime_error(oss.str());
 		}
-		
-		// Validate rate value
+
+		if (rateStr.empty()) {
+            std::ostringstream oss;
+            oss << "Error: missing rate value at line " << lineNumber << ": " << line;
+            throw std::runtime_error(oss.str());
+        }
+
 		char* endPtr;
 		float rate = std::strtof(rateStr.c_str(), &endPtr);
 		if (*endPtr != '\0' || rate < 0)
 		{
-			std::cerr << "Warning: invalid rate value at line " << lineNumber << ": " << rateStr << std::endl;
-			continue;
+			std::ostringstream oss;
+			oss << "Error: invalid rate value at line " << lineNumber << ": " << rateStr;
+			throw std::runtime_error(oss.str());
 		}
 		
 		exchangeRates[date] = rate;
@@ -93,21 +99,25 @@ void BitcoinExchange::loadDatabase(const std::string& filename)
 void BitcoinExchange::processInputFile(const std::string& filename)
 {
 	std::ifstream file(filename.c_str());
-	if (!file.is_open()) {
+	if (!file.is_open())
+	{
 		std::cerr << "Error: could not open file." << std::endl;
 		return;
 	}
 
 	std::string line;
 	bool firstLine = true;
-	while (std::getline(file, line)) {
-		if (firstLine) {
+	while (std::getline(file, line))
+	{
+		if (firstLine)
+		{
 			firstLine = false;
 			continue;
 		}
 		
 		size_t pipePos = line.find(" | ");
-		if (pipePos == std::string::npos) {
+		if (pipePos == std::string::npos)
+		{
 			std::cerr << "Error: bad input => " << line << std::endl;
 			continue;
 		}
@@ -115,13 +125,15 @@ void BitcoinExchange::processInputFile(const std::string& filename)
 		std::string date = trim(line.substr(0, pipePos));
 		std::string valueStr = trim(line.substr(pipePos + 3));
 		
-		if (!isValidDate(date)) {
+		if (!isValidDate(date))
+		{
 			std::cerr << "Error: bad input => " << date << std::endl;
 			continue;
 		}
 		
 		float value;
-		if (!isValidValue(valueStr, value)) {
+		if (!isValidValue(valueStr, value))
+		{
 			if (value < 0)
 				std::cerr << "Error: not a positive number." << std::endl;
 			else
@@ -148,7 +160,6 @@ float BitcoinExchange::getExchangeRate(const std::string& date) const
 		--lower;
 		return lower->second;
 	}
-	
 	return 0.0f;
 }
 
@@ -171,13 +182,12 @@ bool BitcoinExchange::isValidDate(const std::string& date) const
 	
 	if (year < 1 || month < 1 || month > 12 || day < 1 || day > 31)
 		return false;
-	
 	return true;
 }
 
 bool BitcoinExchange::isValidValue(const std::string& valueStr, float& value) const
 {
-	char* endPtr;
+	char *endPtr;
 	value = std::strtof(valueStr.c_str(), &endPtr);
 	
 	if (*endPtr != '\0')
@@ -193,17 +203,13 @@ bool BitcoinExchange::isValidValue(const std::string& valueStr, float& value) co
 bool BitcoinExchange::isValidDatabaseFormat(const std::string& line) const
 {
 	size_t commaPos = line.find(',');
+
 	if (commaPos == std::string::npos)
 		return false;
-	
-	// Check if there's exactly one comma
 	if (line.find(',', commaPos + 1) != std::string::npos)
 		return false;
-	
-	// Check if both parts exist
 	if (commaPos == 0 || commaPos == line.length() - 1)
 		return false;
-	
 	return true;
 }
 
@@ -212,7 +218,7 @@ std::string BitcoinExchange::trim(const std::string& str) const
 	size_t start = str.find_first_not_of(" \t\r\n");
 	if (start == std::string::npos)
 		return "";
-	
+
 	size_t end = str.find_last_not_of(" \t\r\n");
 	return str.substr(start, end - start + 1);
 }
