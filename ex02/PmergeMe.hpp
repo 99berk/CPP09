@@ -21,7 +21,8 @@ class PmergeMe
         bool isValidNumber(const std::string &str);
         void parseInput(int argc, char *argv[]);
         void displaySequence(const std::string &label, const std::vector<int> &sequence);
-
+        double getCurrentTime();
+        
     public:
         PmergeMe();
         PmergeMe(const PmergeMe &other);

@@ -5,6 +5,7 @@
 #include <ctime>
 #include <iomanip>
 #include <climits>
+#include <sys/time.h>
 
 PmergeMe::PmergeMe() {}
 
@@ -317,21 +318,28 @@ void PmergeMe::processInput(int argc, char *argv[])
         throw std::runtime_error("Error: No valid numbers provided");
 }
 
+double PmergeMe::getCurrentTime()
+{
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return tv.tv_sec * 1000000.0 + tv.tv_usec;
+}
+
 void PmergeMe::sortAndDisplay()
 {
     displaySequence("Before:", _vectorData);
 
     std::vector<int> vectorCopy = _vectorData;
-    clock_t start = clock();
+    double startTime = getCurrentTime();
     std::vector<int> sortedVector = mergeInsertSortVector(vectorCopy);
-    clock_t end = clock();
-    double vectorTime = static_cast<double>(end - start) / CLOCKS_PER_SEC * 1000000;
+    double endTime = getCurrentTime();
+    double vectorTime = endTime - startTime;
 
     std::deque<int> dequeCopy = _dequeData;
-    start = clock();
+    startTime = getCurrentTime();
     std::deque<int> sortedDeque = mergeInsertSortDeque(dequeCopy);
-    end = clock();
-    double dequeTime = static_cast<double>(end - start) / CLOCKS_PER_SEC * 1000000;
+    endTime = getCurrentTime();
+    double dequeTime = endTime - startTime;
 
     std::vector<int> dequeResult(sortedDeque.begin(), sortedDeque.end());
     displaySequence("After:", dequeResult);
