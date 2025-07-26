@@ -120,7 +120,7 @@ std::vector<int> PmergeMe::mergeInsertSortVector(std::vector<int> &arr)
         return arr;
     }
 
-    std::vector<std::pair<int, int>> pairs;
+    std::vector<std::pair<int, int> > pairs;
     int unpaired = -1;
 
     for (int i = 0; i < n - 1; i += 2)
@@ -227,7 +227,7 @@ std::deque<int> PmergeMe::mergeInsertSortDeque(std::deque<int> &arr)
         return arr;
     }
 
-    std::vector<std::pair<int, int>> pairs;
+    std::vector<std::pair<int, int> > pairs;
     int unpaired = -1;
 
     for (int i = 0; i < n - 1; i += 2)
