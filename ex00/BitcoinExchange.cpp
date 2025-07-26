@@ -131,6 +131,12 @@ void BitcoinExchange::processInputFile(const std::string& filename)
 			continue;
 		}
 		
+		if (valueStr.empty())
+		{
+			std::cerr << "Error: bad input => " << line << std::endl;
+			continue;
+		}
+
 		float value;
 		if (!isValidValue(valueStr, value))
 		{
