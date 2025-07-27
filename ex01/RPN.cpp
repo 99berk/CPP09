@@ -87,8 +87,8 @@ int RPN::calculate(const std::string& expression)
             if (isNumber(token))
             {
                 int num = std::atoi(token.c_str());
-                if (num >= 10 || num < 0)
-                    throw std::runtime_error("Numbers must be less than 10 and non-negative");
+                if (num >= 10)
+                    throw std::runtime_error("Numbers must be less than 10");
                 _stack.push(num);
             }
             else if (isOperator(token))
