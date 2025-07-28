@@ -12,14 +12,15 @@ class PmergeMe
         std::deque<int> _dequeData;
 
         std::vector<int> mergeInsertSortVector(std::vector<int> &arr);
+        std::deque<int> mergeInsertSortDeque(std::deque<int> &arr);
+        
         void insertionSortVector(std::vector<int> &arr, int left, int right);
+        void insertionSortDeque(std::deque<int> &arr, int left, int right);
+        
         std::vector<int> generateJacobsthalSequence(int n);
 
-        std::deque<int> mergeInsertSortDeque(std::deque<int> &arr);
-        void insertionSortDeque(std::deque<int> &arr, int left, int right);
-
-        bool isValidNumber(const std::string &str);
         void parseInput(int argc, char *argv[]);
+        bool isValidNumber(const std::string &str);
         void displaySequence(const std::string &label, const std::vector<int> &sequence);
         double getCurrentTime();
         

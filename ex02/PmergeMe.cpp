@@ -1,8 +1,6 @@
 #include "PmergeMe.hpp"
 #include <iostream>
-#include <sstream>
 #include <algorithm>
-#include <ctime>
 #include <iomanip>
 #include <climits>
 #include <sys/time.h>
@@ -58,18 +56,15 @@ void PmergeMe::parseInput(int argc, char *argv[])
     }
 }
 
-void PmergeMe::displaySequence(const std::string &label, const std::vector<int> &sequence)
+void PmergeMe::processInput(int argc, char *argv[])
 {
-    std::cout << label;
+    if (argc < 2)
+        throw std::runtime_error("Error: No input provided");
 
-    size_t displayLimit = 4;
-    for (size_t i = 0; i < sequence.size() && i < displayLimit; ++i)
-        std::cout << " " << sequence[i];
+    parseInput(argc, argv);
 
-    if (sequence.size() > displayLimit)
-        std::cout << " [...]";
-
-    std::cout << std::endl;
+    if (_vectorData.empty())
+        throw std::runtime_error("Error: No valid numbers provided");
 }
 
 std::vector<int> PmergeMe::generateJacobsthalSequence(int n)
@@ -307,22 +302,25 @@ std::deque<int> PmergeMe::mergeInsertSortDeque(std::deque<int> &arr)
     return mainChain;
 }
 
-void PmergeMe::processInput(int argc, char *argv[])
-{
-    if (argc < 2)
-        throw std::runtime_error("Error: No input provided");
-
-    parseInput(argc, argv);
-
-    if (_vectorData.empty())
-        throw std::runtime_error("Error: No valid numbers provided");
-}
-
 double PmergeMe::getCurrentTime()
 {
     struct timeval tv;
     gettimeofday(&tv, NULL);
-    return tv.tv_sec * 1000000.0 + tv.tv_usec;
+    return tv.tv_sec + (tv.tv_usec / 1000000.0) ;
+}
+
+void PmergeMe::displaySequence(const std::string &label, const std::vector<int> &sequence)
+{
+    std::cout << label;
+
+    size_t displayLimit = 4;
+    for (size_t i = 0; i < sequence.size() && i < displayLimit; ++i)
+        std::cout << " " << sequence[i];
+
+    if (sequence.size() > displayLimit)
+        std::cout << " [...]";
+
+    std::cout << std::endl;
 }
 
 void PmergeMe::sortAndDisplay()
@@ -346,7 +344,7 @@ void PmergeMe::sortAndDisplay()
 
     std::cout << std::fixed << std::setprecision(5);
     std::cout << "Time to process a range of " << _vectorData.size()
-              << " elements with std::vector : " << vectorTime << " us" << std::endl;
+              << " elements with std::vector : " << (vectorTime * 1000000.0) << " us" << std::endl;
     std::cout << "Time to process a range of " << _dequeData.size()
-              << " elements with std::deque : " << dequeTime << " us" << std::endl;
+              << " elements with std::deque : " << (dequeTime * 1000000.0) << " us" << std::endl;
 }
