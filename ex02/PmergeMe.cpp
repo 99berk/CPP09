@@ -88,33 +88,11 @@ std::vector<int> PmergeMe::generateJacobsthalSequence(int n)
     return jacobsthal;
 }
 
-void PmergeMe::insertionSortVector(std::vector<int> &arr, int left, int right)
-{
-    for (int i = left + 1; i <= right; ++i)
-    {
-        int key = arr[i];
-        int j = i - 1;
-
-        while (j >= left && arr[j] > key)
-        {
-            arr[j + 1] = arr[j];
-            --j;
-        }
-        arr[j + 1] = key;
-    }
-}
-
 std::vector<int> PmergeMe::mergeInsertSortVector(std::vector<int> &arr)
 {
     int n = arr.size();
     if (n <= 1)
         return arr;
-
-    if (n <= 20)
-    {
-        insertionSortVector(arr, 0, n - 1);
-        return arr;
-    }
 
     std::vector<std::pair<int, int> > pairs;
     int unpaired = -1;
@@ -195,33 +173,11 @@ std::vector<int> PmergeMe::mergeInsertSortVector(std::vector<int> &arr)
     return mainChain;
 }
 
-void PmergeMe::insertionSortDeque(std::deque<int> &arr, int left, int right)
-{
-    for (int i = left + 1; i <= right; ++i)
-    {
-        int key = arr[i];
-        int j = i - 1;
-
-        while (j >= left && arr[j] > key)
-        {
-            arr[j + 1] = arr[j];
-            --j;
-        }
-        arr[j + 1] = key;
-    }
-}
-
 std::deque<int> PmergeMe::mergeInsertSortDeque(std::deque<int> &arr)
 {
     int n = arr.size();
     if (n <= 1)
         return arr;
-
-    if (n <= 20)
-    {
-        insertionSortDeque(arr, 0, n - 1);
-        return arr;
-    }
 
     std::vector<std::pair<int, int> > pairs;
     int unpaired = -1;

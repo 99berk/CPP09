@@ -13,10 +13,7 @@ class PmergeMe
 
         std::vector<int> mergeInsertSortVector(std::vector<int> &arr);
         std::deque<int> mergeInsertSortDeque(std::deque<int> &arr);
-        
-        void insertionSortVector(std::vector<int> &arr, int left, int right);
-        void insertionSortDeque(std::deque<int> &arr, int left, int right);
-        
+
         std::vector<int> generateJacobsthalSequence(int n);
 
         void parseInput(int argc, char *argv[]);
