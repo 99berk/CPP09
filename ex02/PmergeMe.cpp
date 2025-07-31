@@ -32,7 +32,7 @@ bool PmergeMe::isValidNumber(const std::string &str)
             return false;
     }
 
-    long long num = 0;
+    long num = 0;
     for (size_t i = 0; i < str.length(); ++i)
     {
         num = num * 10 + (str[i] - '0');
@@ -63,7 +63,7 @@ void PmergeMe::processInput(int argc, char *argv[])
 
     parseInput(argc, argv);
 
-    if (_vectorData.empty())
+    if (_vectorData.empty() || _dequeData.empty())
         throw std::runtime_error("Error: No valid numbers provided");
 }
 
@@ -130,19 +130,13 @@ std::vector<int> PmergeMe::mergeInsertSortVector(std::vector<int> &arr)
         pending.push_back(pairs[i].second);
     }
 
-    if (!pending.empty())
-    {
-        mainChain.insert(mainChain.begin(), pending[0]);
-        pending.erase(pending.begin());
-    }
-
     std::vector<int> jacobsthal = generateJacobsthalSequence(pending.size());
     std::vector<bool> inserted(pending.size(), false);
 
     for (size_t i = 1; i < jacobsthal.size(); ++i)
     {
-        int end = jacobsthal[i];
         int start = jacobsthal[i - 1] + 1;
+        int end = jacobsthal[i];
 
         for (int j = std::min(end, (int)pending.size()) - 1; j >= start - 1 && j >= 0; --j)
         {
@@ -215,19 +209,13 @@ std::deque<int> PmergeMe::mergeInsertSortDeque(std::deque<int> &arr)
         pending.push_back(pairs[i].second);
     }
 
-    if (!pending.empty())
-    {
-        mainChain.push_front(pending[0]);
-        pending.pop_front();
-    }
-
     std::vector<int> jacobsthal = generateJacobsthalSequence(pending.size());
     std::vector<bool> inserted(pending.size(), false);
 
     for (size_t i = 1; i < jacobsthal.size(); ++i)
     {
-        int end = jacobsthal[i];
         int start = jacobsthal[i - 1] + 1;
+        int end = jacobsthal[i];
 
         for (int j = std::min(end, (int)pending.size()) - 1; j >= start - 1 && j >= 0; --j)
         {
@@ -272,8 +260,10 @@ void PmergeMe::displaySequence(const std::string &label, const std::vector<int> 
     size_t displayLimit = 4;
     for (size_t i = 0; i < sequence.size() && i < displayLimit; ++i)
         std::cout << " " << sequence[i];
-
-    if (sequence.size() > displayLimit)
+    
+    if (sequence.size() == 5)
+        std::cout << " " << sequence[4];
+    else if (sequence.size() > displayLimit)
         std::cout << " [...]";
 
     std::cout << std::endl;
@@ -296,11 +286,11 @@ void PmergeMe::sortAndDisplay()
     double dequeTime = endTime - startTime;
 
     std::vector<int> dequeResult(sortedDeque.begin(), sortedDeque.end());
-    displaySequence("After:", dequeResult);
+    displaySequence("After: ", dequeResult);
 
     std::cout << std::fixed << std::setprecision(5);
     std::cout << "Time to process a range of " << _vectorData.size()
               << " elements with std::vector : " << (vectorTime * 1000000.0) << " us" << std::endl;
     std::cout << "Time to process a range of " << _dequeData.size()
-              << " elements with std::deque : " << (dequeTime * 1000000.0) << " us" << std::endl;
+              << " elements with std::deque  : " << (dequeTime * 1000000.0) << " us" << std::endl;
 }
